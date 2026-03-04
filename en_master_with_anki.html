@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حفظ الجمل الإنجليزية الذكي</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Crimson+Pro:ital,wght@0,300;0,600;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080a0f;
+  --bg1: #0e1118;
+  --bg2: #141820;
+  --bg3: #1c2230;
+  --card: #161c27;
+  --border: #252d3d;
+  --border2: #2f3a50;
+  --cyan: #00d4ff;
+  --cyan2: #0099cc;
+  --amber: #ffb340;
+  --green: #00e896;
+  --red: #ff4f6b;
+  --purple: #a78bfa;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #4a5568;
+  --glow: 0 0 40px rgba(0,212,255,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Tajawal',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;z-index:0;
+}
+
+header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(8,10,15,0.92);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:64px;
+}
+.logo{
+  font-family:'Crimson Pro',serif;
+  font-size:1.4rem;font-weight:600;
+  color:var(--cyan);
+  letter-spacing:2px;
+  display:flex;align-items:center;gap:10px;
+}
+.logo-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--cyan);
+  box-shadow:0 0 12px var(--cyan);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+
+.header-stats{display:flex;gap:20px;align-items:center;}
+.hstat{display:flex;flex-direction:column;align-items:center;font-size:0.72rem;color:var(--text2);}
+.hstat strong{font-size:1.1rem;font-weight:700;color:var(--text)}
+.hstat.cyan strong{color:var(--cyan)}
+.hstat.amber strong{color:var(--amber)}
+.hstat.green strong{color:var(--green)}
+
+.tabs{
+  display:flex;gap:4px;padding:16px 24px 0;
+  border-bottom:1px solid var(--border);
+  position:relative;z-index:1;
+  overflow-x:auto;
+}
+.tab-btn{
+  background:none;border:none;cursor:pointer;
+  font-family:'Tajawal',sans-serif;font-size:0.9rem;
+  color:var(--text2);padding:10px 20px;
+  border-radius:8px 8px 0 0;
+  border-bottom:2px solid transparent;
+  transition:all 0.2s;white-space:nowrap;
+}
+.tab-btn:hover{color:var(--text);background:var(--bg2)}
+.tab-btn.active{color:var(--cyan);border-bottom-color:var(--cyan);background:var(--bg1);}
+
+.page{display:none;padding:24px;max-width:1200px;margin:0 auto;position:relative;z-index:1}
+.page.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.fc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+.fc-controls{display:flex;gap:10px;flex-wrap:wrap}
+.btn{
+  font-family:'Tajawal',sans-serif;font-size:0.85rem;padding:8px 18px;
+  border:1px solid var(--border2);border-radius:8px;cursor:pointer;
+  background:var(--bg3);color:var(--text2);transition:all 0.2s;
+}
+.btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn.active-btn{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,0.08)}
+
+.progress-ring-wrap{
+  display:flex;align-items:center;gap:16px;margin-bottom:24px;
+  background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 24px;
+}
+.progress-ring{position:relative;width:64px;height:64px;flex-shrink:0}
+.ring-svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--bg3);stroke-width:5}
+.ring-fill{fill:none;stroke:var(--cyan);stroke-width:5;stroke-linecap:round;stroke-dasharray:170;transition:stroke-dashoffset 0.8s ease;}
+.ring-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:var(--cyan);}
+.progress-info{flex:1}
+.progress-info h3{font-size:1rem;margin-bottom:4px}
+.progress-info p{color:var(--text2);font-size:0.85rem}
+.mini-bars{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.mini-bar{height:6px;border-radius:99px;flex:1;min-width:20px;background:var(--bg3);transition:background 0.3s;}
+.mini-bar.known{background:var(--green)}
+.mini-bar.learning{background:var(--amber)}
+.mini-bar.new{background:var(--border2)}
+
+.cat-filter{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.cat-btn{font-family:'Tajawal',sans-serif;font-size:0.8rem;padding:6px 14px;border-radius:99px;border:1px solid var(--border2);background:var(--bg2);color:var(--text2);cursor:pointer;transition:all 0.2s;}
+.cat-btn:hover,.cat-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,0.08);}
+
+.sentences-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;}
+.sentence-card{
+  background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;
+  cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;user-select:none;
+}
+.sentence-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--purple));transform:scaleX(0);transform-origin:left;transition:transform 0.3s;}
+.sentence-card:hover::before{transform:scaleX(1)}
+.sentence-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.4);}
+.sentence-card.known{border-color:rgba(0,232,150,0.3);background:rgba(0,232,150,0.04)}
+.sentence-card.known::before{background:var(--green);transform:scaleX(1)}
+.sentence-card.learning{border-color:rgba(255,179,64,0.3);background:rgba(255,179,64,0.04)}
+.sentence-card.learning::before{background:var(--amber);transform:scaleX(1)}
+
+.sc-num{font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--text3);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;}
+.sc-status-dot{width:7px;height:7px;border-radius:50%;background:var(--text3);transition:background 0.3s;}
+.sentence-card.known .sc-status-dot{background:var(--green);box-shadow:0 0 8px var(--green)}
+.sentence-card.learning .sc-status-dot{background:var(--amber);box-shadow:0 0 8px var(--amber)}
+.sc-en{font-family:'Crimson Pro',serif;font-size:1.2rem;font-weight:600;line-height:1.5;color:var(--text);margin-bottom:8px;direction:ltr;text-align:left;}
+.sc-ar{font-size:0.9rem;color:var(--text2);line-height:1.6;margin-bottom:14px;}
+.sc-actions{display:flex;gap:8px;}
+.sc-btn{flex:1;padding:7px;border-radius:8px;font-family:'Tajawal',sans-serif;font-size:0.8rem;border:1px solid;cursor:pointer;transition:all 0.2s;}
+.sc-btn-speak{border-color:var(--border2);color:var(--text2);background:var(--bg3);}
+.sc-btn-speak:hover{border-color:var(--cyan);color:var(--cyan)}
+.sc-btn-known{border-color:rgba(0,232,150,0.3);color:var(--green);background:rgba(0,232,150,0.06);}
+.sc-btn-known:hover{background:rgba(0,232,150,0.15)}
+.sc-btn-learning{border-color:rgba(255,179,64,0.3);color:var(--amber);background:rgba(255,179,64,0.06);}
+.sc-btn-learning:hover{background:rgba(255,179,64,0.15)}
+
+@keyframes speakPulse{0%{box-shadow:0 0 0 0 rgba(0,212,255,0.6)}70%{box-shadow:0 0 0 15px rgba(0,212,255,0)}100%{box-shadow:0 0 0 0 rgba(0,212,255,0)}}
+.speaking{animation:speakPulse 0.6s ease}
+
+.quiz-wrap{max-width:680px;margin:0 auto}
+.quiz-top{display:flex;align-items:center;gap:16px;margin-bottom:24px;}
+.quiz-progress-bar{flex:1;height:6px;background:var(--bg3);border-radius:99px;overflow:hidden;}
+.quiz-progress-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--purple));border-radius:99px;transition:width 0.4s ease;}
+.quiz-score-badge{font-family:'DM Mono',monospace;font-size:0.85rem;color:var(--cyan);padding:6px 14px;border:1px solid rgba(0,212,255,0.3);border-radius:8px;background:rgba(0,212,255,0.06);white-space:nowrap;}
+.quiz-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:36px;text-align:center;}
+.quiz-mode-label{font-size:0.75rem;letter-spacing:2px;color:var(--text3);text-transform:uppercase;margin-bottom:24px;}
+.quiz-en-big{font-family:'Crimson Pro',serif;font-size:2.2rem;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:8px;direction:ltr;cursor:pointer;transition:color 0.2s;}
+.quiz-en-big:hover{color:var(--cyan)}
+.quiz-hint{color:var(--text3);font-size:0.8rem;margin-bottom:28px}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:right}
+.quiz-opt{background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:14px 18px;font-family:'Tajawal',sans-serif;font-size:0.95rem;color:var(--text);cursor:pointer;transition:all 0.2s;text-align:right;}
+.quiz-opt:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,0.06)}
+.quiz-opt.correct{border-color:var(--green);color:var(--green);background:rgba(0,232,150,0.1);}
+.quiz-opt.wrong{border-color:var(--red);color:var(--red);background:rgba(255,79,107,0.1);}
+.quiz-fb{margin-top:20px;padding:14px;border-radius:12px;font-size:0.95rem;display:none;}
+.quiz-fb.ok{background:rgba(0,232,150,0.1);border:1px solid rgba(0,232,150,0.3);color:var(--green)}
+.quiz-fb.no{background:rgba(255,79,107,0.1);border:1px solid rgba(255,79,107,0.3);color:var(--red)}
+.btn-primary{margin-top:16px;width:100%;background:linear-gradient(135deg,var(--cyan2),var(--purple));border:none;border-radius:12px;color:#fff;font-family:'Tajawal',sans-serif;font-size:1rem;font-weight:600;padding:14px;cursor:pointer;transition:opacity 0.2s;display:none;}
+.btn-primary:hover{opacity:0.85}
+
+.review-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:40px;text-align:center;margin-bottom:20px;}
+.review-en{font-family:'Crimson Pro',serif;font-size:2.4rem;color:var(--text);line-height:1.4;margin-bottom:16px;direction:ltr;cursor:pointer;}
+.review-en:hover{color:var(--cyan)}
+.review-ar{font-size:1.1rem;color:var(--text2);margin-bottom:24px;display:none;}
+.reveal-btn{background:none;border:1px dashed var(--border2);color:var(--text2);font-family:'Tajawal',sans-serif;font-size:0.9rem;padding:10px 28px;border-radius:99px;cursor:pointer;transition:all 0.2s;}
+.reveal-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+
+.stats-hero{text-align:center;padding:40px 20px;}
+.big-circle{width:160px;height:160px;margin:0 auto 24px;position:relative;}
+.big-circle svg{transform:rotate(-90deg)}
+.bcircle-bg{fill:none;stroke:var(--bg3);stroke-width:12}
+.bcircle-fill{fill:none;stroke:url(#circleGrad);stroke-width:12;stroke-linecap:round;stroke-dasharray:440;transition:stroke-dashoffset 1.2s ease;}
+.big-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.big-num span{font-size:2.5rem;font-weight:900;color:var(--cyan)}
+.big-num small{font-size:0.75rem;color:var(--text2)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;max-width:900px;margin:0 auto;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;text-align:center;}
+.stat-card .val{font-size:2rem;font-weight:900;margin-bottom:4px}
+.stat-card .lbl{color:var(--text2);font-size:0.85rem}
+.stat-card .bar-wrap{height:4px;background:var(--bg3);border-radius:99px;margin-top:12px;overflow:hidden}
+.stat-card .bar-inner{height:100%;border-radius:99px;transition:width 1s ease}
+.category-list{max-width:900px;margin:32px auto 0;}
+.cat-row{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;gap:16px;}
+.cat-row-name{flex:1;font-size:0.95rem}
+.cat-row-count{color:var(--text2);font-size:0.85rem;white-space:nowrap}
+.cat-row-bar{width:140px;height:5px;background:var(--bg3);border-radius:99px;overflow:hidden}
+.cat-row-fill{height:100%;border-radius:99px}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:12px 24px;font-size:0.9rem;color:var(--text);z-index:999;transition:transform 0.3s ease;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ===================== ANKI SYSTEM ===================== */
+
+/* Heatmap */
+.anki-heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(52, 1fr);
+  gap: 3px;
+  direction: ltr;
+}
+.hm-cell {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 3px;
+  background: var(--bg3);
+  cursor: pointer;
+  transition: transform 0.1s;
+  position: relative;
+}
+.hm-cell:hover { transform: scale(1.4); z-index: 10; }
+.hm-cell[data-count="0"] { background: var(--bg3); }
+.hm-cell[data-count="1"] { background: rgba(0,212,255,0.25); }
+.hm-cell[data-count="2"] { background: rgba(0,212,255,0.45); }
+.hm-cell[data-count="3"] { background: rgba(0,212,255,0.65); }
+.hm-cell[data-count="4"] { background: var(--cyan); }
+
+/* Anki flip card */
+.anki-scene {
+  perspective: 1000px;
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  height: 320px;
+}
+.anki-card-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+.anki-card-wrapper.flipped { transform: rotateY(180deg); }
+.anki-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  text-align: center;
+}
+.anki-front {
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+.anki-back {
+  background: linear-gradient(135deg, #0d1a2e, #131c2e);
+  border: 1px solid rgba(0,212,255,0.25);
+  transform: rotateY(180deg);
+}
+.anki-card-label {
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  color: var(--text3);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  font-family: 'DM Mono', monospace;
+}
+.anki-card-en {
+  font-family: 'Crimson Pro', serif;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.4;
+  direction: ltr;
+  cursor: pointer;
+}
+.anki-card-en:hover { color: var(--cyan); }
+.anki-card-ar {
+  font-size: 1.3rem;
+  color: var(--text);
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+.anki-card-cat {
+  font-size: 0.8rem;
+  color: var(--cyan);
+  background: rgba(0,212,255,0.1);
+  padding: 4px 14px;
+  border-radius: 99px;
+  border: 1px solid rgba(0,212,255,0.2);
+  font-family: 'DM Mono', monospace;
+}
+.anki-card-interval {
+  font-size: 0.75rem;
+  color: var(--text3);
+  margin-top: 10px;
+  font-family: 'DM Mono', monospace;
+}
+
+/* Anki rating buttons */
+.anki-ratings {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  max-width: 680px;
+  margin: 16px auto 0;
+}
+.anki-btn {
+  padding: 14px 8px;
+  border-radius: 12px;
+  border: 1px solid;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.anki-btn-interval {
+  font-size: 0.7rem;
+  font-family: 'DM Mono', monospace;
+  opacity: 0.75;
+}
+.anki-btn-again {
+  border-color: rgba(255,79,107,0.4);
+  color: var(--red);
+  background: rgba(255,79,107,0.06);
+}
+.anki-btn-again:hover { background: rgba(255,79,107,0.15); }
+.anki-btn-hard {
+  border-color: rgba(255,179,64,0.4);
+  color: var(--amber);
+  background: rgba(255,179,64,0.06);
+}
+.anki-btn-hard:hover { background: rgba(255,179,64,0.15); }
+.anki-btn-good {
+  border-color: rgba(0,212,255,0.4);
+  color: var(--cyan);
+  background: rgba(0,212,255,0.06);
+}
+.anki-btn-good:hover { background: rgba(0,212,255,0.15); }
+.anki-btn-easy {
+  border-color: rgba(0,232,150,0.4);
+  color: var(--green);
+  background: rgba(0,232,150,0.06);
+}
+.anki-btn-easy:hover { background: rgba(0,232,150,0.15); }
+
+/* Anki queue indicators */
+.anki-queue-info {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.queue-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 8px 16px;
+  font-size: 0.82rem;
+}
+.queue-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+}
+.queue-num { font-weight: 700; font-family: 'DM Mono', monospace; }
+
+/* Progress bar above anki card */
+.anki-progress-strip {
+  height: 3px;
+  background: var(--bg3);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.anki-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyan), var(--purple));
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+/* Anki flip hint */
+.anki-flip-hint {
+  text-align: center;
+  color: var(--text3);
+  font-size: 0.78rem;
+  margin-top: 12px;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 1px;
+}
+
+/* Anki Stats section */
+.anki-stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  max-width: 680px;
+  margin: 24px auto 0;
+}
+.anki-stat-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+.anki-stat-val { font-size: 1.8rem; font-weight: 900; }
+.anki-stat-lbl { font-size: 0.78rem; color: var(--text2); margin-top: 4px; }
+
+/* Anki session done */
+.anki-done-card {
+  max-width: 680px;
+  margin: 0 auto;
+  background: var(--card);
+  border: 1px solid rgba(0,232,150,0.3);
+  border-radius: 20px;
+  padding: 48px;
+  text-align: center;
+}
+.anki-done-icon { font-size: 4rem; margin-bottom: 16px; }
+.anki-done-title { font-size: 1.8rem; font-weight: 900; color: var(--green); margin-bottom: 8px; }
+.anki-done-sub { color: var(--text2); font-size: 0.95rem; margin-bottom: 28px; line-height: 1.7; }
+
+/* Anki heatmap wrapper */
+.anki-heatmap-wrap {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 24px auto 0;
+  max-width: 900px;
+  overflow-x: auto;
+}
+.anki-heatmap-title {
+  font-size: 0.85rem;
+  color: var(--text2);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.anki-heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--text3);
+}
+.hm-legend-box {
+  width: 12px; height: 12px; border-radius: 2px;
+}
+
+/* Deck selector */
+.anki-deck-select {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.deck-btn {
+  font-family: 'Tajawal', sans-serif;
+  font-size: 0.82rem;
+  padding: 8px 16px;
+  border-radius: 99px;
+  border: 1px solid var(--border2);
+  background: var(--bg2);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.deck-btn:hover, .deck-btn.active {
+  border-color: var(--purple);
+  color: var(--purple);
+  background: rgba(167,139,250,0.08);
+}
+
+/* Anki "again" bounce */
+@keyframes shakeBounce {
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-8px)}
+  40%{transform:translateX(8px)}
+  60%{transform:translateX(-5px)}
+  80%{transform:translateX(5px)}
+}
+.anki-shake { animation: shakeBounce 0.4s ease; }
+
+/* Anki card glow on flip */
+.anki-back-glow {
+  box-shadow: 0 0 40px rgba(0,212,255,0.12), inset 0 0 60px rgba(0,212,255,0.04);
+}
+
+@media(max-width:640px){
+  .sentences-grid{grid-template-columns:1fr}
+  .quiz-options{grid-template-columns:1fr}
+  .header-stats{gap:12px}
+  .hstat{font-size:0.65rem}
+  .hstat strong{font-size:0.95rem}
+  .tabs{padding:12px 12px 0;gap:2px}
+  .tab-btn{padding:8px 12px;font-size:0.8rem}
+  .page{padding:16px}
+  .quiz-en-big{font-size:1.6rem}
+  .anki-ratings{grid-template-columns:repeat(2,1fr)}
+  .anki-card-en{font-size:1.5rem}
+  .anki-scene{height:260px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-dot"></div>
+    EN·MASTER
+  </div>
+  <div class="header-stats">
+    <div class="hstat cyan"><strong id="h-known">0</strong>محفوظة</div>
+    <div class="hstat amber"><strong id="h-learning">0</strong>جاري تعلمها</div>
+    <div class="hstat green"><strong id="h-pct">0%</strong>التقدم</div>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('browse')">📋 جميع الجمل</button>
+  <button class="tab-btn" onclick="showTab('anki')" style="color:var(--purple)">🎴 Anki ذكي</button>
+  <button class="tab-btn" onclick="showTab('review')">🧠 مراجعة ذكية</button>
+  <button class="tab-btn" onclick="showTab('quiz')">⚡ اختبار سريع</button>
+  <button class="tab-btn" onclick="showTab('stats')">📊 إحصائياتي</button>
+  <button class="tab-btn" style="color:var(--amber)" onclick="showTab('import')">➕ إضافة قسم</button>
+</div>
+
+<!-- ============ BROWSE TAB ============ -->
+<div id="tab-browse" class="page active">
+  <div class="progress-ring-wrap">
+    <div class="progress-ring">
+      <svg class="ring-svg" width="64" height="64" viewBox="0 0 64 64">
+        <circle class="ring-bg" cx="32" cy="32" r="27"/>
+        <circle class="ring-fill" id="ringFill" cx="32" cy="32" r="27" stroke-dashoffset="170"/>
+      </svg>
+      <div class="ring-pct" id="ringPct">0%</div>
+    </div>
+    <div class="progress-info">
+      <h3>تقدمك في الحفظ</h3>
+      <p id="progressText">ابدأ بالضغط على الجمل للحفظ</p>
+      <div class="mini-bars" id="miniBars"></div>
+    </div>
+  </div>
+  <div class="fc-header">
+    <div class="cat-filter" id="catFilter">
+      <button class="cat-btn active" onclick="filterCat('all',this)">الكل (200)</button>
+    </div>
+    <div class="fc-controls">
+      <button class="btn" onclick="sortBy('num')">ترتيب رقمي</button>
+      <button class="btn" onclick="sortBy('status')">حسب الحالة</button>
+      <button class="btn active-btn" onclick="speakAll()">🔊 تشغيل الكل</button>
+    </div>
+  </div>
+  <div class="sentences-grid" id="sentencesGrid"></div>
+</div>
+
+<!-- ============ ANKI TAB ============ -->
+<div id="tab-anki" class="page">
+
+  <!-- Header info -->
+  <div style="max-width:680px;margin:0 auto 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div>
+      <h2 style="font-size:1.25rem;margin-bottom:4px">🎴 نظام Anki الذكي</h2>
+      <p style="color:var(--text2);font-size:0.85rem">خوارزمية التكرار المتباعد — تراجع الجمل في الوقت المثالي</p>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" onclick="ankiReset()" title="إعادة ضبط الجلسة">🔄 جلسة جديدة</button>
+      <button class="btn active-btn" onclick="showTab('stats')" style="border-color:var(--purple);color:var(--purple)">📊 إحصائيات</button>
+    </div>
+  </div>
+
+  <!-- Deck selector -->
+  <div class="anki-deck-select" id="ankiDeckSelect"></div>
+
+  <!-- Queue info -->
+  <div class="anki-queue-info" id="ankiQueueInfo">
+    <div class="queue-pill">
+      <div class="queue-dot" style="background:var(--red)"></div>
+      <span style="color:var(--text2)">جديدة</span>
+      <span class="queue-num" id="qNew" style="color:var(--red)">0</span>
+    </div>
+    <div class="queue-pill">
+      <div class="queue-dot" style="background:var(--amber)"></div>
+      <span style="color:var(--text2)">للمراجعة</span>
+      <span class="queue-num" id="qDue" style="color:var(--amber)">0</span>
+    </div>
+    <div class="queue-pill">
+      <div class="queue-dot" style="background:var(--green)"></div>
+      <span style="color:var(--text2)">محفوظة</span>
+      <span class="queue-num" id="qLearned" style="color:var(--green)">0</span>
+    </div>
+  </div>
+
+  <!-- Progress strip -->
+  <div class="anki-progress-strip">
+    <div class="anki-progress-fill" id="ankiProgressFill" style="width:0%"></div>
+  </div>
+
+  <!-- Main anki area -->
+  <div id="ankiMain">
+
+    <!-- Flip Card -->
+    <div class="anki-scene" id="ankiScene" onclick="ankiFlip()">
+      <div class="anki-card-wrapper" id="ankiCardWrapper">
+        <div class="anki-face anki-front" id="ankiFront">
+          <div class="anki-card-label">إنجليزي</div>
+          <div class="anki-card-en" id="ankiEn" onclick="event.stopPropagation();ankiSpeak()">—</div>
+          <div style="margin-top:16px;font-size:0.75rem;color:var(--text3);font-family:'DM Mono',monospace">اضغط بطاقة للقلب ↕</div>
+        </div>
+        <div class="anki-face anki-back anki-back-glow" id="ankiBack">
+          <div class="anki-card-label">الترجمة العربية</div>
+          <div class="anki-card-ar" id="ankiAr">—</div>
+          <div class="anki-card-cat" id="ankiCat">—</div>
+          <div class="anki-card-interval" id="ankiInterval"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="anki-flip-hint" id="ankiFlipHint">🖱️ انقر على البطاقة لرؤية الترجمة</div>
+
+    <!-- Rating buttons (hidden until flipped) -->
+    <div class="anki-ratings" id="ankiRatings" style="display:none">
+      <button class="anki-btn anki-btn-again" onclick="ankiRate(0)">
+        ❌ مجدداً
+        <span class="anki-btn-interval" id="intAgain">الآن</span>
+      </button>
+      <button class="anki-btn anki-btn-hard" onclick="ankiRate(1)">
+        😓 صعبة
+        <span class="anki-btn-interval" id="intHard">1 دقيقة</span>
+      </button>
+      <button class="anki-btn anki-btn-good" onclick="ankiRate(2)">
+        👍 جيدة
+        <span class="anki-btn-interval" id="intGood">10 دقائق</span>
+      </button>
+      <button class="anki-btn anki-btn-easy" onclick="ankiRate(3)">
+        ✅ سهلة
+        <span class="anki-btn-interval" id="intEasy">يوم</span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Done screen (hidden by default) -->
+  <div id="ankiDone" style="display:none">
+    <div class="anki-done-card">
+      <div class="anki-done-icon">🎉</div>
+      <div class="anki-done-title">أحسنت! انتهت الجلسة</div>
+      <div class="anki-done-sub" id="ankiDoneSub">راجعت X بطاقة اليوم. عد غداً للمراجعة الذكية!</div>
+      <div class="anki-stats-row" id="ankiSessionStats"></div>
+      <div style="display:flex;gap:12px;justify-content:center;margin-top:28px;flex-wrap:wrap">
+        <button class="btn active-btn" onclick="ankiContinueMore()" style="border-color:var(--purple);color:var(--purple)">➕ راجع المزيد</button>
+        <button class="btn" onclick="ankiReset()">🔄 بدء من جديد</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Heatmap -->
+  <div class="anki-heatmap-wrap" id="ankiHeatmapWrap">
+    <div class="anki-heatmap-title">
+      <span>📅 نشاط المراجعة (آخر سنة)</span>
+      <div class="anki-heatmap-legend">
+        أقل
+        <div class="hm-legend-box" style="background:var(--bg3)"></div>
+        <div class="hm-legend-box" style="background:rgba(0,212,255,0.25)"></div>
+        <div class="hm-legend-box" style="background:rgba(0,212,255,0.55)"></div>
+        <div class="hm-legend-box" style="background:var(--cyan)"></div>
+        أكثر
+      </div>
+    </div>
+    <div class="anki-heatmap-grid" id="ankiHeatmap"></div>
+  </div>
+
+  <!-- Anki stats summary -->
+  <div class="anki-stats-row" style="max-width:680px;margin:20px auto 0" id="ankiGlobalStats"></div>
+
+</div>
+
+<!-- ============ REVIEW TAB ============ -->
+<div id="tab-review" class="page">
+  <div style="max-width:640px;margin:0 auto">
+    <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap">
+      <button class="btn active-btn" id="reviewModeBtn" onclick="setReviewMode('all')">كل الجمل</button>
+      <button class="btn" onclick="setReviewMode('learning')">قيد التعلم فقط</button>
+      <button class="btn" onclick="setReviewMode('new')">الجديدة فقط</button>
+      <button class="btn" onclick="shuffleReview()">🔀 خلط</button>
+    </div>
+    <div class="review-card" id="reviewCard">
+      <div class="review-en" id="reviewEn" onclick="speakSentence(currentReviewSentence?.en)">— — —</div>
+      <div class="review-ar" id="reviewAr"></div>
+      <button class="reveal-btn" id="revealBtn" onclick="revealReview()">اكشف المعنى 👁</button>
+      <div class="review-actions" id="reviewActions" style="display:none;justify-content:center;gap:12px;margin-top:20px">
+        <button style="padding:12px 28px;border-radius:12px;font-family:'Tajawal',sans-serif;font-size:0.95rem;border:1px solid rgba(255,79,107,0.4);color:var(--red);background:rgba(255,79,107,0.06);cursor:pointer" onclick="reviewAnswer('again')">مجدداً 🔁</button>
+        <button style="padding:12px 28px;border-radius:12px;font-family:'Tajawal',sans-serif;font-size:0.95rem;border:1px solid rgba(255,179,64,0.4);color:var(--amber);background:rgba(255,179,64,0.06);cursor:pointer" onclick="reviewAnswer('hard')">صعبة 😓</button>
+        <button style="padding:12px 28px;border-radius:12px;font-family:'Tajawal',sans-serif;font-size:0.95rem;border:1px solid rgba(0,232,150,0.4);color:var(--green);background:rgba(0,232,150,0.06);cursor:pointer" onclick="reviewAnswer('easy')">سهلة ✅</button>
+      </div>
+    </div>
+    <div style="text-align:center;color:var(--text2);font-size:0.85rem" id="reviewCounter"></div>
+  </div>
+</div>
+
+<!-- ============ QUIZ TAB ============ -->
+<div id="tab-quiz" class="page">
+  <div class="quiz-wrap">
+    <div class="quiz-top">
+      <div class="quiz-progress-bar">
+        <div class="quiz-progress-fill" id="quizProgressFill" style="width:0%"></div>
+      </div>
+      <div class="quiz-score-badge" id="quizScoreBadge">0 / 0</div>
+    </div>
+    <div class="quiz-card">
+      <div class="quiz-mode-label">اختر الترجمة الصحيحة</div>
+      <div class="quiz-en-big" id="qEn" onclick="speakSentence(currentQ?.en)">—</div>
+      <div class="quiz-hint">🔊 اضغط على الجملة للاستماع</div>
+      <div class="quiz-options" id="qOpts"></div>
+      <div class="quiz-fb" id="qFb"></div>
+      <button class="btn-primary" id="qNext" onclick="nextQuiz()">التالية ←</button>
+    </div>
+    <div style="text-align:center;margin-top:20px;color:var(--text2);font-size:0.85rem" id="quizEndMsg"></div>
+  </div>
+</div>
+
+<!-- ============ STATS TAB ============ -->
+<div id="tab-stats" class="page">
+  <div class="stats-hero">
+    <div class="big-circle">
+      <svg width="160" height="160" viewBox="0 0 160 160">
+        <defs>
+          <linearGradient id="circleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:var(--cyan)"/>
+            <stop offset="100%" style="stop-color:var(--purple)"/>
+          </linearGradient>
+        </defs>
+        <circle class="bcircle-bg" cx="80" cy="80" r="70"/>
+        <circle class="bcircle-fill" id="bigCircle" cx="80" cy="80" r="70" stroke-dashoffset="440"/>
+      </svg>
+      <div class="big-num">
+        <span id="statsKnownNum">0</span>
+        <small>محفوظة / 200</small>
+      </div>
+    </div>
+    <h2 style="font-size:1.4rem;margin-bottom:8px" id="statsTitle">استمر في التعلم!</h2>
+    <p style="color:var(--text2)" id="statsSubtitle">لم تبدأ بعد، اضغط على أي جملة للبدء</p>
+  </div>
+  <div class="stats-grid" id="statsGrid"></div>
+  <div class="category-list" id="catList"></div>
+</div>
+
+<!-- ============ IMPORT TAB ============ -->
+<div id="tab-import" class="page">
+  <div style="max-width:780px;margin:0 auto">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:32px;margin-bottom:20px">
+      <h2 style="font-size:1.2rem;margin-bottom:8px;color:var(--amber)">➕ إضافة قسم جديد</h2>
+      <p style="color:var(--text2);font-size:0.9rem;line-height:1.7;margin-bottom:24px">الصق كود JSON أدناه لإضافة جمل جديدة إلى الموقع.</p>
+      <div style="background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:20px;margin-bottom:24px">
+        <div style="color:var(--cyan);font-size:0.8rem;letter-spacing:1px;margin-bottom:12px;font-family:'DM Mono',monospace">📋 الصيغة المطلوبة (JSON)</div>
+        <pre style="font-family:'DM Mono',monospace;font-size:0.8rem;color:var(--text2);direction:ltr;text-align:left;line-height:1.8;overflow-x:auto">[
+  { "en": "I love learning.", "ar": "أنا أحب التعلم.", "cat": "تعليم" },
+  { "en": "Keep it simple.", "ar": "ابقه بسيطاً.", "cat": "تعليم" }
+]</pre>
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="font-size:0.9rem;color:var(--text2);display:block;margin-bottom:8px">الصق الكود هنا:</label>
+        <textarea id="importInput" placeholder='[ { "en": "...", "ar": "...", "cat": "..." } ]'
+          style="width:100%;min-height:180px;background:var(--bg);border:1px solid var(--border2);border-radius:12px;padding:16px;color:var(--text);font-family:'DM Mono',monospace;font-size:0.85rem;resize:vertical;outline:none;direction:ltr;line-height:1.7;transition:border-color 0.2s"
+          onfocus="this.style.borderColor='var(--cyan)'" onblur="this.style.borderColor='var(--border2)'"></textarea>
+      </div>
+      <div id="importPreview" style="display:none;background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:16px;margin-bottom:16px;max-height:220px;overflow-y:auto"></div>
+      <div id="importError" style="display:none;background:rgba(255,79,107,0.1);border:1px solid rgba(255,79,107,0.3);border-radius:10px;padding:12px 16px;color:var(--red);font-size:0.88rem;margin-bottom:16px"></div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <button onclick="validateImport()" style="flex:1;min-width:120px;padding:12px;border-radius:10px;border:1px solid var(--border2);background:var(--bg3);color:var(--text2);font-family:'Tajawal',sans-serif;font-size:0.95rem;cursor:pointer;transition:all 0.2s" onmouseover="this.style.borderColor='var(--cyan)';this.style.color='var(--cyan)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text2)'">🔍 معاينة</button>
+        <button id="importConfirmBtn" onclick="confirmImport()" style="flex:2;min-width:160px;padding:12px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--cyan2),var(--purple));color:#fff;font-family:'Tajawal',sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer;opacity:0.4;pointer-events:none;transition:opacity 0.3s">✅ إضافة إلى الموقع</button>
+      </div>
+    </div>
+    <div id="customSectionsWrap">
+      <div style="font-size:1rem;font-weight:600;color:var(--text2);margin-bottom:12px">📦 الأقسام المضافة</div>
+      <div id="customSectionsList"></div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px;margin-top:20px">
+      <div style="font-size:1rem;font-weight:600;margin-bottom:16px;color:var(--text2)">🎯 أمثلة جاهزة — اضغط لتحميلها</div>
+      <div style="display:flex;flex-direction:column;gap:10px" id="presetsList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// =========== DATA ===========
+const SENTENCES = [
+  {id:1,en:"Hello, how are you?",ar:"مرحباً، كيف حالك؟",cat:"تحيات"},
+  {id:2,en:"I'm fine, thank you.",ar:"أنا بخير، شكراً لك.",cat:"تحيات"},
+  {id:3,en:"Nice to meet you.",ar:"سعيد بمقابلتك.",cat:"تحيات"},
+  {id:4,en:"Good morning!",ar:"صباح الخير!",cat:"تحيات"},
+  {id:5,en:"Good night!",ar:"تصبح على خير!",cat:"تحيات"},
+  {id:6,en:"See you later.",ar:"أراك لاحقاً.",cat:"تحيات"},
+  {id:7,en:"Have a good day!",ar:"أتمنى لك يوماً سعيداً!",cat:"تحيات"},
+  {id:8,en:"Take care!",ar:"اعتنِ بنفسك!",cat:"تحيات"},
+  {id:9,en:"How's everything going?",ar:"كيف تسير الأمور؟",cat:"تحيات"},
+  {id:10,en:"Long time no see!",ar:"لم أرك منذ زمن!",cat:"تحيات"},
+  {id:11,en:"What is your name?",ar:"ما اسمك؟",cat:"يومية"},
+  {id:12,en:"My name is Ahmed.",ar:"اسمي أحمد.",cat:"يومية"},
+  {id:13,en:"Where are you from?",ar:"من أين أنت؟",cat:"يومية"},
+  {id:14,en:"I am from Saudi Arabia.",ar:"أنا من المملكة العربية السعودية.",cat:"يومية"},
+  {id:15,en:"How old are you?",ar:"كم عمرك؟",cat:"يومية"},
+  {id:16,en:"I am twenty-five years old.",ar:"عمري خمسة وعشرون سنة.",cat:"يومية"},
+  {id:17,en:"Do you speak English?",ar:"هل تتحدث الإنجليزية؟",cat:"يومية"},
+  {id:18,en:"I speak a little English.",ar:"أتحدث القليل من الإنجليزية.",cat:"يومية"},
+  {id:19,en:"Please speak slowly.",ar:"تكلم ببطء من فضلك.",cat:"يومية"},
+  {id:20,en:"I don't understand.",ar:"أنا لا أفهم.",cat:"يومية"},
+  {id:21,en:"Can you repeat that?",ar:"هل يمكنك تكرار ذلك؟",cat:"يومية"},
+  {id:22,en:"What does this mean?",ar:"ماذا يعني هذا؟",cat:"يومية"},
+  {id:23,en:"I need help.",ar:"أحتاج إلى مساعدة.",cat:"يومية"},
+  {id:24,en:"Thank you very much.",ar:"شكراً جزيلاً.",cat:"يومية"},
+  {id:25,en:"You're welcome.",ar:"على الرحب والسعة / عفواً.",cat:"يومية"},
+  {id:26,en:"I'm sorry.",ar:"أنا آسف.",cat:"يومية"},
+  {id:27,en:"No problem.",ar:"لا مشكلة.",cat:"يومية"},
+  {id:28,en:"Of course!",ar:"بالطبع!",cat:"يومية"},
+  {id:29,en:"Excuse me.",ar:"عذراً / من فضلك.",cat:"يومية"},
+  {id:30,en:"Please wait a moment.",ar:"انتظر لحظة من فضلك.",cat:"يومية"},
+  {id:31,en:"Where is the bathroom?",ar:"أين الحمام؟",cat:"أسئلة"},
+  {id:32,en:"What time is it?",ar:"كم الساعة؟",cat:"أسئلة"},
+  {id:33,en:"How much does this cost?",ar:"كم يكلف هذا؟",cat:"أسئلة"},
+  {id:34,en:"Can I help you?",ar:"هل يمكنني مساعدتك؟",cat:"أسئلة"},
+  {id:35,en:"What do you do for work?",ar:"ماذا تعمل؟",cat:"أسئلة"},
+  {id:36,en:"Where are you going?",ar:"أين أنت ذاهب؟",cat:"أسئلة"},
+  {id:37,en:"What are you doing?",ar:"ماذا تفعل؟",cat:"أسئلة"},
+  {id:38,en:"Do you have any questions?",ar:"هل لديك أي أسئلة؟",cat:"أسئلة"},
+  {id:39,en:"How far is it from here?",ar:"كم المسافة من هنا؟",cat:"أسئلة"},
+  {id:40,en:"Is this seat taken?",ar:"هل هذا المقعد مشغول؟",cat:"أسئلة"},
+  {id:41,en:"I would like to book a room.",ar:"أريد حجز غرفة.",cat:"سفر"},
+  {id:42,en:"Where is the nearest hotel?",ar:"أين أقرب فندق؟",cat:"سفر"},
+  {id:43,en:"I need a taxi, please.",ar:"أحتاج سيارة أجرة من فضلك.",cat:"سفر"},
+  {id:44,en:"Take me to the airport.",ar:"خذني إلى المطار.",cat:"سفر"},
+  {id:45,en:"My flight is at eight o'clock.",ar:"رحلتي الساعة الثامنة.",cat:"سفر"},
+  {id:46,en:"I lost my passport.",ar:"لقد فقدت جواز سفري.",cat:"سفر"},
+  {id:47,en:"Where can I exchange money?",ar:"أين يمكنني تبديل النقود؟",cat:"سفر"},
+  {id:48,en:"Is there a bus to the city center?",ar:"هل يوجد حافلة إلى وسط المدينة؟",cat:"سفر"},
+  {id:49,en:"How long is the flight?",ar:"كم تستغرق الرحلة؟",cat:"سفر"},
+  {id:50,en:"I have a reservation.",ar:"لدي حجز.",cat:"سفر"},
+  {id:51,en:"I'm hungry.",ar:"أنا جائع.",cat:"طعام"},
+  {id:52,en:"Can I see the menu, please?",ar:"هل يمكنني رؤية القائمة من فضلك؟",cat:"طعام"},
+  {id:53,en:"I would like water, please.",ar:"أريد ماء من فضلك.",cat:"طعام"},
+  {id:54,en:"The food is delicious!",ar:"الطعام لذيذ!",cat:"طعام"},
+  {id:55,en:"Can I have the bill, please?",ar:"هل يمكنني الحصول على الفاتورة؟",cat:"طعام"},
+  {id:56,en:"I am allergic to nuts.",ar:"أنا حساس تجاه المكسرات.",cat:"طعام"},
+  {id:57,en:"What do you recommend?",ar:"ماذا تنصح؟",cat:"طعام"},
+  {id:58,en:"This is too spicy.",ar:"هذا حار جداً.",cat:"طعام"},
+  {id:59,en:"I'll have the same.",ar:"سآخذ نفس الشيء.",cat:"طعام"},
+  {id:60,en:"Do you have vegetarian options?",ar:"هل لديكم خيارات نباتية؟",cat:"طعام"},
+  {id:61,en:"How much is this?",ar:"كم سعر هذا؟",cat:"تسوق"},
+  {id:62,en:"That's too expensive.",ar:"هذا غالٍ جداً.",cat:"تسوق"},
+  {id:63,en:"Can you give me a discount?",ar:"هل يمكنك إعطائي خصماً؟",cat:"تسوق"},
+  {id:64,en:"I'll take it.",ar:"سآخذه.",cat:"تسوق"},
+  {id:65,en:"Do you have it in another color?",ar:"هل لديك هذا بلون آخر؟",cat:"تسوق"},
+  {id:66,en:"What size do you have?",ar:"ما المقاسات المتاحة لديك؟",cat:"تسوق"},
+  {id:67,en:"Can I try this on?",ar:"هل يمكنني تجربة هذا؟",cat:"تسوق"},
+  {id:68,en:"I'm just looking, thanks.",ar:"أنا أتفرج فقط، شكراً.",cat:"تسوق"},
+  {id:69,en:"Do you accept credit cards?",ar:"هل تقبل بطاقات الائتمان؟",cat:"تسوق"},
+  {id:70,en:"Can I get a receipt?",ar:"هل يمكنني الحصول على إيصال؟",cat:"تسوق"},
+  {id:71,en:"I have a meeting at ten.",ar:"لدي اجتماع في العاشرة.",cat:"عمل"},
+  {id:72,en:"Please send me an email.",ar:"أرسل لي بريداً إلكترونياً من فضلك.",cat:"عمل"},
+  {id:73,en:"The deadline is tomorrow.",ar:"الموعد النهائي غداً.",cat:"عمل"},
+  {id:74,en:"I agree with your proposal.",ar:"أوافق على اقتراحك.",cat:"عمل"},
+  {id:75,en:"Let me think about it.",ar:"دعني أفكر في الأمر.",cat:"عمل"},
+  {id:76,en:"Can we schedule a call?",ar:"هل يمكننا تحديد موعد لمكالمة؟",cat:"عمل"},
+  {id:77,en:"I'll get back to you soon.",ar:"سأرد عليك قريباً.",cat:"عمل"},
+  {id:78,en:"That's a great idea.",ar:"هذه فكرة رائعة.",cat:"عمل"},
+  {id:79,en:"I'm working on it.",ar:"أنا أعمل على ذلك.",cat:"عمل"},
+  {id:80,en:"Please review this document.",ar:"يرجى مراجعة هذه الوثيقة.",cat:"عمل"},
+  {id:81,en:"I don't feel well.",ar:"لا أشعر بتحسن.",cat:"صحة"},
+  {id:82,en:"I have a headache.",ar:"لدي صداع.",cat:"صحة"},
+  {id:83,en:"I need to see a doctor.",ar:"أحتاج إلى رؤية طبيب.",cat:"صحة"},
+  {id:84,en:"Call an ambulance!",ar:"اتصل بسيارة الإسعاف!",cat:"صحة"},
+  {id:85,en:"I have a fever.",ar:"لدي حمى.",cat:"صحة"},
+  {id:86,en:"Where is the pharmacy?",ar:"أين الصيدلية؟",cat:"صحة"},
+  {id:87,en:"I take this medicine every day.",ar:"آخذ هذا الدواء كل يوم.",cat:"صحة"},
+  {id:88,en:"I'm feeling much better now.",ar:"أشعر بتحسن كبير الآن.",cat:"صحة"},
+  {id:89,en:"I need a prescription.",ar:"أحتاج إلى وصفة طبية.",cat:"صحة"},
+  {id:90,en:"How long have you been sick?",ar:"منذ متى وأنت مريض؟",cat:"صحة"},
+  {id:91,en:"I am very happy.",ar:"أنا سعيد جداً.",cat:"مشاعر"},
+  {id:92,en:"I'm so excited!",ar:"أنا متحمس جداً!",cat:"مشاعر"},
+  {id:93,en:"I'm a little nervous.",ar:"أنا قليلاً متوتر.",cat:"مشاعر"},
+  {id:94,en:"That's interesting!",ar:"هذا مثير للاهتمام!",cat:"مشاعر"},
+  {id:95,en:"I love this place.",ar:"أحب هذا المكان.",cat:"مشاعر"},
+  {id:96,en:"I'm bored.",ar:"أنا ممل / أشعر بالملل.",cat:"مشاعر"},
+  {id:97,en:"That's amazing!",ar:"هذا مذهل!",cat:"مشاعر"},
+  {id:98,en:"I'm proud of you.",ar:"أنا فخور بك.",cat:"مشاعر"},
+  {id:99,en:"I miss you.",ar:"أفتقدك.",cat:"مشاعر"},
+  {id:100,en:"I'm so tired.",ar:"أنا متعب جداً.",cat:"مشاعر"},
+  {id:101,en:"What day is today?",ar:"ما هو اليوم؟",cat:"وقت"},
+  {id:102,en:"Today is Monday.",ar:"اليوم هو الإثنين.",cat:"وقت"},
+  {id:103,en:"I'll be there at noon.",ar:"سأكون هناك في الظهر.",cat:"وقت"},
+  {id:104,en:"We have a lot of time.",ar:"لدينا وقت كثير.",cat:"وقت"},
+  {id:105,en:"I'm running late.",ar:"أنا متأخر.",cat:"وقت"},
+  {id:106,en:"Can we meet tomorrow?",ar:"هل يمكننا الاجتماع غداً؟",cat:"وقت"},
+  {id:107,en:"I'll be ready in five minutes.",ar:"سأكون جاهزاً خلال خمس دقائق.",cat:"وقت"},
+  {id:108,en:"It won't take long.",ar:"لن يستغرق وقتاً طويلاً.",cat:"وقت"},
+  {id:109,en:"I have free time this weekend.",ar:"لدي وقت فراغ هذا الأسبوع.",cat:"وقت"},
+  {id:110,en:"Please be on time.",ar:"كن في الوقت المحدد من فضلك.",cat:"وقت"},
+  {id:111,en:"Go straight ahead.",ar:"اذهب مباشرة إلى الأمام.",cat:"اتجاهات"},
+  {id:112,en:"Turn left at the light.",ar:"انعطف يساراً عند الإشارة الضوئية.",cat:"اتجاهات"},
+  {id:113,en:"It's on your right.",ar:"إنه على يمينك.",cat:"اتجاهات"},
+  {id:114,en:"It's two blocks away.",ar:"إنه على بعد بلوكين.",cat:"اتجاهات"},
+  {id:115,en:"I'm lost.",ar:"أنا ضائع.",cat:"اتجاهات"},
+  {id:116,en:"Can you show me on the map?",ar:"هل يمكنك أن تريني على الخريطة؟",cat:"اتجاهات"},
+  {id:117,en:"How do I get to the station?",ar:"كيف أصل إلى المحطة؟",cat:"اتجاهات"},
+  {id:118,en:"Is it far from here?",ar:"هل هو بعيد من هنا؟",cat:"اتجاهات"},
+  {id:119,en:"Cross the street.",ar:"اعبر الشارع.",cat:"اتجاهات"},
+  {id:120,en:"It's right around the corner.",ar:"إنه حول الزاوية مباشرة.",cat:"اتجاهات"},
+  {id:121,en:"Can you send me the file?",ar:"هل يمكنك إرسال الملف لي؟",cat:"تقنية"},
+  {id:122,en:"My internet is not working.",ar:"الإنترنت لديّ لا تعمل.",cat:"تقنية"},
+  {id:123,en:"Please turn off your phone.",ar:"أرجو إيقاف تشغيل هاتفك.",cat:"تقنية"},
+  {id:124,en:"What is the WiFi password?",ar:"ما هي كلمة مرور الواي فاي؟",cat:"تقنية"},
+  {id:125,en:"My battery is dead.",ar:"بطاريتي فارغة تماماً.",cat:"تقنية"},
+  {id:126,en:"I need to charge my phone.",ar:"أحتاج إلى شحن هاتفي.",cat:"تقنية"},
+  {id:127,en:"Can you take a photo of me?",ar:"هل يمكنك التقاط صورة لي؟",cat:"تقنية"},
+  {id:128,en:"The app is not working.",ar:"التطبيق لا يعمل.",cat:"تقنية"},
+  {id:129,en:"I'll look it up online.",ar:"سأبحث عنه على الإنترنت.",cat:"تقنية"},
+  {id:130,en:"Please check your email.",ar:"يرجى التحقق من بريدك الإلكتروني.",cat:"تقنية"},
+  {id:131,en:"This is my family.",ar:"هذه عائلتي.",cat:"اجتماعي"},
+  {id:132,en:"I have two brothers.",ar:"لدي أخوان.",cat:"اجتماعي"},
+  {id:133,en:"My parents are teachers.",ar:"والداي مدرسان.",cat:"اجتماعي"},
+  {id:134,en:"We are getting married.",ar:"نحن نتزوج.",cat:"اجتماعي"},
+  {id:135,en:"Happy birthday to you!",ar:"عيد ميلاد سعيد لك!",cat:"اجتماعي"},
+  {id:136,en:"Congratulations!",ar:"تهانيّ!",cat:"اجتماعي"},
+  {id:137,en:"I wish you all the best.",ar:"أتمنى لك كل التوفيق.",cat:"اجتماعي"},
+  {id:138,en:"Can you come to my party?",ar:"هل يمكنك الحضور إلى حفلتي؟",cat:"اجتماعي"},
+  {id:139,en:"Let's go out tonight.",ar:"لنخرج الليلة.",cat:"اجتماعي"},
+  {id:140,en:"I had a great time.",ar:"قضيت وقتاً رائعاً.",cat:"اجتماعي"},
+  {id:141,en:"I study English every day.",ar:"أدرس الإنجليزية كل يوم.",cat:"تعليم"},
+  {id:142,en:"Can you explain this again?",ar:"هل يمكنك شرح هذا مجدداً؟",cat:"تعليم"},
+  {id:143,en:"I need to practice more.",ar:"أحتاج إلى الممارسة أكثر.",cat:"تعليم"},
+  {id:144,en:"I passed my exam!",ar:"اجتزت امتحاني!",cat:"تعليم"},
+  {id:145,en:"What is the homework?",ar:"ما هو الواجب المنزلي؟",cat:"تعليم"},
+  {id:146,en:"I have a lot to learn.",ar:"لدي الكثير لأتعلمه.",cat:"تعليم"},
+  {id:147,en:"This lesson is very useful.",ar:"هذا الدرس مفيد جداً.",cat:"تعليم"},
+  {id:148,en:"I want to improve my English.",ar:"أريد تحسين إنجليزيتي.",cat:"تعليم"},
+  {id:149,en:"Practice makes perfect.",ar:"التدريب يصنع الكمال.",cat:"تعليم"},
+  {id:150,en:"Keep up the good work!",ar:"استمر في العمل الجيد!",cat:"تعليم"},
+  {id:151,en:"It depends on the situation.",ar:"يعتمد على الموقف.",cat:"متقدم"},
+  {id:152,en:"I strongly disagree.",ar:"أنا أختلف بشدة.",cat:"متقدم"},
+  {id:153,en:"To be honest with you.",ar:"لأكون صريحاً معك.",cat:"متقدم"},
+  {id:154,en:"That's a good point.",ar:"هذه نقطة جيدة.",cat:"متقدم"},
+  {id:155,en:"I see what you mean.",ar:"أفهم ما تعنيه.",cat:"متقدم"},
+  {id:156,en:"Let me be clear about this.",ar:"دعني أكن واضحاً بشأن هذا.",cat:"متقدم"},
+  {id:157,en:"I'm not sure about that.",ar:"لست متأكداً من ذلك.",cat:"متقدم"},
+  {id:158,en:"Could you be more specific?",ar:"هل يمكنك أن تكون أكثر تحديداً؟",cat:"متقدم"},
+  {id:159,en:"I'd rather not talk about it.",ar:"أفضل عدم الحديث عن ذلك.",cat:"متقدم"},
+  {id:160,en:"As far as I know...",ar:"في حدود ما أعلم...",cat:"متقدم"},
+  {id:161,en:"On the other hand...",ar:"من ناحية أخرى...",cat:"متقدم"},
+  {id:162,en:"In my opinion...",ar:"في رأيي...",cat:"متقدم"},
+  {id:163,en:"That's out of the question.",ar:"هذا أمر مستحيل / خارج عن الموضوع.",cat:"متقدم"},
+  {id:164,en:"I'll do my best.",ar:"سأبذل قصارى جهدي.",cat:"متقدم"},
+  {id:165,en:"Never mind.",ar:"لا يهم.",cat:"متقدم"},
+  {id:166,en:"It's worth it.",ar:"يستحق الأمر.",cat:"متقدم"},
+  {id:167,en:"Make yourself at home.",ar:"اشعر بأنك في بيتك.",cat:"متقدم"},
+  {id:168,en:"That's easier said than done.",ar:"هذا أسهل في القول منه في الفعل.",cat:"متقدم"},
+  {id:169,en:"Better late than never.",ar:"التأخر خيرٌ من عدم الحضور.",cat:"متقدم"},
+  {id:170,en:"It's not a big deal.",ar:"الأمر ليس كبيراً.",cat:"متقدم"},
+  {id:171,en:"What do you think?",ar:"ما رأيك؟",cat:"عبارات"},
+  {id:172,en:"I think so too.",ar:"أعتقد ذلك أيضاً.",cat:"عبارات"},
+  {id:173,en:"Let me know if you need anything.",ar:"أخبرني إذا احتجت أي شيء.",cat:"عبارات"},
+  {id:174,en:"That makes sense.",ar:"هذا منطقي.",cat:"عبارات"},
+  {id:175,en:"I got it!",ar:"فهمتها!",cat:"عبارات"},
+  {id:176,en:"Well done!",ar:"أحسنت!",cat:"عبارات"},
+  {id:177,en:"Keep going!",ar:"استمر!",cat:"عبارات"},
+  {id:178,en:"Good luck!",ar:"حظاً موفقاً!",cat:"عبارات"},
+  {id:179,en:"Don't worry!",ar:"لا تقلق!",cat:"عبارات"},
+  {id:180,en:"Cheer up!",ar:"ابتسم / تفاءل!",cat:"عبارات"},
+  {id:181,en:"You can do it!",ar:"بإمكانك فعل ذلك!",cat:"عبارات"},
+  {id:182,en:"That's funny!",ar:"هذا مضحك!",cat:"عبارات"},
+  {id:183,en:"I know, right?",ar:"أعرف، أليس كذلك؟",cat:"عبارات"},
+  {id:184,en:"Let's change the subject.",ar:"لنغير الموضوع.",cat:"عبارات"},
+  {id:185,en:"By the way...",ar:"بالمناسبة...",cat:"عبارات"},
+  {id:186,en:"Come on!",ar:"هيا! / تشجيع",cat:"عبارات"},
+  {id:187,en:"No worries!",ar:"لا قلق! / كل شيء تمام.",cat:"عبارات"},
+  {id:188,en:"It's up to you.",ar:"الأمر متروك لك.",cat:"عبارات"},
+  {id:189,en:"I'll figure it out.",ar:"سأجد طريقة لحل ذلك.",cat:"عبارات"},
+  {id:190,en:"That works for me.",ar:"هذا يناسبني.",cat:"عبارات"},
+  {id:191,en:"I can't believe it!",ar:"لا أصدق ذلك!",cat:"عبارات"},
+  {id:192,en:"Are you serious?",ar:"هل أنت جاد؟",cat:"عبارات"},
+  {id:193,en:"Let's go!",ar:"هيا نذهب!",cat:"عبارات"},
+  {id:194,en:"I'm on my way.",ar:"أنا في الطريق.",cat:"عبارات"},
+  {id:195,en:"I'll be right back.",ar:"سأعود حالاً.",cat:"عبارات"},
+  {id:196,en:"Sounds good!",ar:"يبدو رائعاً!",cat:"عبارات"},
+  {id:197,en:"I agree.",ar:"أوافق.",cat:"عبارات"},
+  {id:198,en:"Absolutely!",ar:"بالتأكيد!",cat:"عبارات"},
+  {id:199,en:"It was nice talking to you.",ar:"كان من الجميل التحدث معك.",cat:"عبارات"},
+  {id:200,en:"Have a safe trip!",ar:"أتمنى لك رحلة آمنة!",cat:"سفر"},
+];
+
+// =========== STATE ===========
+let state = {};
+const getCats = () => [...new Set(SENTENCES.map(s=>s.cat))];
+let currentCat = 'all';
+let sortMode = 'num';
+let synth = window.speechSynthesis;
+let currentQ = null, quizList = [], qIdx = 0, qScore = 0, qAnswered = false;
+let reviewList = [], rIdx = 0, reviewMode = 'all', currentReviewSentence = null;
+
+function loadState(){
+  try{ state = JSON.parse(localStorage.getItem('en_master_state')||'{}'); }catch(e){ state={}; }
+}
+function saveState(){ localStorage.setItem('en_master_state', JSON.stringify(state)); }
+function getStatus(id){ return state[id] || 'new'; }
+function setStatus(id, st){ state[id]=st; saveState(); updateHeaderStats(); }
+
+// =========== SPEAK ===========
+let currentAudio = null;
+function speakSentence(text, el){
+  if(!text) return;
+  if(currentAudio){ currentAudio.pause(); currentAudio.src=''; currentAudio=null; }
+  document.querySelectorAll('.speaking').forEach(e=>e.classList.remove('speaking'));
+  if(el) el.classList.add('speaking');
+  const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=en&client=tw-ob`;
+  const audio = new Audio(url);
+  currentAudio = audio;
+  audio.onended = ()=>{ if(el) el.classList.remove('speaking'); currentAudio=null; };
+  audio.onerror = ()=>{
+    if(el) el.classList.remove('speaking'); currentAudio=null;
+    const u = new SpeechSynthesisUtterance(text); u.lang='en-US'; u.rate=0.85;
+    const v = synth.getVoices().find(x=>x.lang.startsWith('en')); if(v) u.voice=v;
+    if(el){ el.classList.add('speaking'); u.onend=()=>el.classList.remove('speaking'); }
+    synth.speak(u);
+  };
+  audio.play().catch(()=>{ if(el) el.classList.remove('speaking'); });
+}
+
+function speakAll(){
+  const filtered = getFiltered(); let i=0;
+  if(currentAudio){ currentAudio.pause(); currentAudio=null; }
+  function speakNext(){
+    if(i>=filtered.length){ showToast('✅ تم تشغيل جميع الجمل'); return; }
+    const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(filtered[i].en)}&tl=en&client=tw-ob`;
+    const audio = new Audio(url);
+    audio.onended = ()=>{ i++; setTimeout(speakNext,400); };
+    audio.onerror = ()=>{ i++; setTimeout(speakNext,400); };
+    audio.play().catch(()=>{ i++; setTimeout(speakNext,400); });
+  }
+  speakNext();
+  showToast('🔊 جاري تشغيل '+filtered.length+' جملة...');
+}
+
+// =========== STATS ===========
+function updateHeaderStats(){
+  const known = SENTENCES.filter(s=>state[s.id]==='known').length;
+  const learning = SENTENCES.filter(s=>state[s.id]==='learning').length;
+  const pct = Math.round(known/SENTENCES.length*100);
+  document.getElementById('h-known').textContent = known;
+  document.getElementById('h-learning').textContent = learning;
+  document.getElementById('h-pct').textContent = pct+'%';
+  const offset = 170 - (170 * known/SENTENCES.length);
+  document.getElementById('ringFill').style.strokeDashoffset = offset;
+  document.getElementById('ringPct').textContent = pct+'%';
+  document.getElementById('progressText').textContent =
+    known===0 ? 'ابدأ بالضغط على الجمل للحفظ' :
+    known<50 ? `رائع! حفظت ${known} جملة. استمر!` :
+    known<100 ? `ممتاز! نصف الطريق تقريباً!` :
+    known<180 ? `مذهل! أنت قريب جداً من الهدف!` :
+    `🎉 أنت احترافي! حفظت ${known} جملة!`;
+  const bars = document.getElementById('miniBars');
+  bars.innerHTML='';
+  SENTENCES.forEach(s=>{
+    const d = document.createElement('div');
+    d.className='mini-bar '+(state[s.id]||'new');
+    bars.appendChild(d);
+  });
+}
+
+// =========== BROWSE ===========
+function getFiltered(){
+  let list = [...SENTENCES];
+  if(currentCat!=='all') list=list.filter(s=>s.cat===currentCat);
+  if(sortMode==='status') list.sort((a,b)=>{
+    const order={known:0,learning:1,new:2};
+    return (order[state[a.id]||'new']||2)-(order[state[b.id]||'new']||2);
+  });
+  return list;
+}
+
+function buildCatFilter(){
+  const el = document.getElementById('catFilter');
+  el.innerHTML=`<button class="cat-btn active" onclick="filterCat('all',this)">الكل (${SENTENCES.length})</button>`;
+  getCats().forEach(cat=>{
+    const cnt = SENTENCES.filter(s=>s.cat===cat).length;
+    const b = document.createElement('button');
+    b.className='cat-btn'; b.textContent=`${cat} (${cnt})`;
+    b.onclick=()=>filterCat(cat,b); el.appendChild(b);
+  });
+}
+
+function filterCat(cat, btn){
+  currentCat=cat;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGrid();
+}
+function sortBy(mode){ sortMode=mode; renderGrid(); }
+
+function renderGrid(){
+  const grid = document.getElementById('sentencesGrid');
+  const list = getFiltered();
+  grid.innerHTML='';
+  list.forEach(s=>{
+    const st = getStatus(s.id);
+    const div = document.createElement('div');
+    div.className=`sentence-card ${st}`; div.id=`sc-${s.id}`;
+    div.innerHTML=`
+      <div class="sc-num"><span>#${String(s.id).padStart(3,'0')} · ${s.cat}</span><span class="sc-status-dot"></span></div>
+      <div class="sc-en">${s.en}</div>
+      <div class="sc-ar">${s.ar}</div>
+      <div class="sc-actions">
+        <button class="sc-btn sc-btn-speak" onclick="event.stopPropagation();speakCard(${s.id})">🔊 استمع</button>
+        <button class="sc-btn sc-btn-learning" onclick="event.stopPropagation();markStatus(${s.id},'learning')">📌 أتعلمها</button>
+        <button class="sc-btn sc-btn-known" onclick="event.stopPropagation();markStatus(${s.id},'known')">✅ حفظتها</button>
+      </div>`;
+    div.addEventListener('click', ()=>speakCard(s.id));
+    grid.appendChild(div);
+  });
+}
+
+function speakCard(id){
+  const s = SENTENCES.find(x=>x.id===id);
+  if(!s) return;
+  speakSentence(s.en, document.getElementById(`sc-${id}`));
+}
+
+function markStatus(id, st){
+  const prev = getStatus(id);
+  if(prev===st){ setStatus(id,'new'); }
+  else { setStatus(id, st); }
+  const el = document.getElementById(`sc-${id}`);
+  if(el) el.className='sentence-card '+(state[id]||'new');
+  updateHeaderStats();
+  showToast(st==='known'?'✅ تم تحديدها كمحفوظة!':'📌 تم إضافتها للمراجعة');
+}
+
+// =========== REVIEW ===========
+function setReviewMode(mode){
+  reviewMode=mode;
+  document.querySelectorAll('#tab-review .btn').forEach(b=>b.classList.remove('active-btn'));
+  event.target.classList.add('active-btn');
+  buildReviewList(); rIdx=0; loadReview();
+}
+function buildReviewList(){
+  if(reviewMode==='learning') reviewList=SENTENCES.filter(s=>state[s.id]==='learning');
+  else if(reviewMode==='new') reviewList=SENTENCES.filter(s=>!state[s.id]||state[s.id]==='new');
+  else reviewList=[...SENTENCES];
+  shuffleArr(reviewList);
+}
+function shuffleReview(){ shuffleArr(reviewList); rIdx=0; loadReview(); }
+function loadReview(){
+  if(!reviewList.length){
+    document.getElementById('reviewEn').textContent='لا توجد جمل في هذه الفئة';
+    document.getElementById('reviewAr').style.display='none';
+    document.getElementById('revealBtn').style.display='block';
+    document.getElementById('reviewActions').style.display='none';
+    document.getElementById('reviewCounter').textContent=''; return;
+  }
+  const s = reviewList[rIdx % reviewList.length];
+  currentReviewSentence = s;
+  document.getElementById('reviewEn').textContent = s.en;
+  document.getElementById('reviewAr').style.display='none';
+  document.getElementById('reviewAr').textContent = s.ar;
+  document.getElementById('revealBtn').style.display='block';
+  document.getElementById('reviewActions').style.display='none';
+  document.getElementById('reviewCounter').textContent = `${(rIdx%reviewList.length)+1} / ${reviewList.length}`;
+}
+function revealReview(){
+  document.getElementById('reviewAr').style.display='block';
+  document.getElementById('revealBtn').style.display='none';
+  document.getElementById('reviewActions').style.display='flex';
+  speakSentence(currentReviewSentence?.en);
+}
+function reviewAnswer(result){
+  if(result==='easy') markStatus(currentReviewSentence.id,'known');
+  else if(result==='hard') markStatus(currentReviewSentence.id,'learning');
+  rIdx++; loadReview();
+}
+
+// =========== QUIZ ===========
+function buildQuiz(){
+  quizList = shuffleArr([...SENTENCES]).slice(0,20);
+  qIdx=0; qScore=0; qAnswered=false;
+  document.getElementById('quizEndMsg').textContent='';
+  loadQuiz();
+}
+function loadQuiz(){
+  if(qIdx>=quizList.length){
+    document.getElementById('qEn').textContent='انتهى الاختبار!';
+    document.getElementById('qOpts').innerHTML='';
+    document.getElementById('qFb').style.display='none';
+    document.getElementById('qNext').style.display='none';
+    const pct = Math.round(qScore/quizList.length*100);
+    document.getElementById('quizEndMsg').innerHTML=`
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;text-align:center">
+        <div style="font-size:3rem;margin-bottom:12px">${pct>=80?'🎉':pct>=50?'😊':'💪'}</div>
+        <div style="font-size:1.8rem;font-weight:900;color:var(--cyan);margin-bottom:8px">${qScore}/${quizList.length}</div>
+        <div style="color:var(--text2);margin-bottom:20px">${pct>=80?'ممتاز!':pct>=50?'جيد! استمر!':'لا بأس، الممارسة مفتاح النجاح!'}</div>
+        <button class="btn-primary" style="display:block" onclick="buildQuiz()">محاولة جديدة 🔄</button>
+      </div>`;
+    return;
+  }
+  qAnswered=false; currentQ = quizList[qIdx];
+  document.getElementById('qEn').textContent = currentQ.en;
+  document.getElementById('qFb').style.display='none';
+  document.getElementById('qNext').style.display='none';
+  document.getElementById('quizProgressFill').style.width = (qIdx/quizList.length*100)+'%';
+  document.getElementById('quizScoreBadge').textContent = qScore+' / '+qIdx;
+  const wrong = shuffleArr(SENTENCES.filter(s=>s.id!==currentQ.id)).slice(0,3);
+  const opts = shuffleArr([...wrong, currentQ]);
+  const container = document.getElementById('qOpts');
+  container.innerHTML='';
+  opts.forEach(opt=>{
+    const b = document.createElement('button'); b.className='quiz-opt'; b.textContent = opt.ar;
+    b.onclick = ()=>answerQuiz(opt.id===currentQ.id, b, container);
+    container.appendChild(b);
+  });
+}
+function answerQuiz(correct, btn, container){
+  if(qAnswered) return; qAnswered=true;
+  if(correct){ qScore++; btn.classList.add('correct'); }
+  else {
+    btn.classList.add('wrong');
+    container.querySelectorAll('.quiz-opt').forEach(b=>{ if(b.textContent===currentQ.ar) b.classList.add('correct'); });
+  }
+  const fb = document.getElementById('qFb');
+  fb.className='quiz-fb '+(correct?'ok':'no');
+  fb.textContent = correct?'✅ إجابة صحيحة!':'❌ إجابة خاطئة. الصحيح: '+currentQ.ar;
+  fb.style.display='block';
+  document.getElementById('qNext').style.display='block';
+  speakSentence(currentQ.en);
+}
+function nextQuiz(){ qIdx++; loadQuiz(); }
+
+// =========== STATS PAGE ===========
+function renderStats(){
+  const known = SENTENCES.filter(s=>state[s.id]==='known').length;
+  const learning = SENTENCES.filter(s=>state[s.id]==='learning').length;
+  const newS = SENTENCES.length-known-learning;
+  const pct = known/SENTENCES.length;
+  document.getElementById('bigCircle').style.strokeDashoffset = 440-(440*pct);
+  document.getElementById('statsKnownNum').textContent = known;
+  document.getElementById('statsTitle').textContent = known===0?'ابدأ رحلتك الآن!':known<50?'أنت في بداية رائعة!':known<100?'مستمر وممتاز!':known<150?'أكثر من النصف! مذهل!':known<200?'شبه محترف! تابع!':'🏆 احترافي كامل!';
+  document.getElementById('statsSubtitle').textContent = `${pct>=1?'اكتملت':'نسبة الحفظ: '+Math.round(pct*100)+'%'} — ${learning} جملة قيد التعلم`;
+  const grid = document.getElementById('statsGrid'); grid.innerHTML='';
+  [{val:known,lbl:'جمل محفوظة',color:'var(--green)',pct:known/SENTENCES.length},
+   {val:learning,lbl:'قيد التعلم',color:'var(--amber)',pct:learning/SENTENCES.length},
+   {val:newS,lbl:'لم تُبدأ بعد',color:'var(--text3)',pct:newS/SENTENCES.length},
+   {val:Math.round(pct*100)+'%',lbl:'نسبة الإتقان',color:'var(--cyan)',pct:pct}
+  ].forEach(c=>{
+    const d = document.createElement('div'); d.className='stat-card';
+    d.innerHTML=`<div class="val" style="color:${c.color}">${c.val}</div><div class="lbl">${c.lbl}</div><div class="bar-wrap"><div class="bar-inner" style="width:${c.pct*100}%;background:${c.color}"></div></div>`;
+    grid.appendChild(d);
+  });
+  const catList = document.getElementById('catList');
+  catList.innerHTML='<div style="font-size:1rem;font-weight:600;margin-bottom:12px;color:var(--text2)">التقدم حسب التصنيف</div>';
+  const colors2=['var(--cyan)','var(--purple)','var(--amber)','var(--green)','var(--red)','#f472b6','#34d399'];
+  getCats().forEach((cat,i)=>{
+    const sents = SENTENCES.filter(s=>s.cat===cat);
+    const kn = sents.filter(s=>state[s.id]==='known').length;
+    const row = document.createElement('div'); row.className='cat-row';
+    row.innerHTML=`<div class="cat-row-name">${cat}</div><div class="cat-row-bar"><div class="cat-row-fill" style="width:${kn/sents.length*100}%;background:${colors2[i%colors2.length]}"></div></div><div class="cat-row-count">${kn}/${sents.length}</div>`;
+    catList.appendChild(row);
+  });
+}
+
+// =============================================
+// =========== ANKI SPACED REPETITION ==========
+// =============================================
+
+/*
+  SM-2 Algorithm Implementation:
+  Each card has:
+  - interval: days until next review
+  - easeFactor: multiplier (starts at 2.5)
+  - repetitions: number of successful reviews
+  - dueDate: timestamp of next review
+  - lapses: number of times rated "again"
+*/
+
+let ankiData = {};        // { cardId: { interval, ef, reps, dueDate, lapses, lastReview } }
+let ankiQueue = [];       // current session queue
+let ankiQIdx = 0;
+let ankiFlipped = false;
+let ankiSessionDeck = 'all';
+let ankiSessionReviewed = 0;
+let ankiSessionCorrect = 0;
+let ankiNewLimit = 20;    // new cards per session
+let ankiDueLimit = 100;   // review cards per session
+
+const ANKI_KEY = 'en_master_anki_v2';
+const ANKI_HEATMAP_KEY = 'en_master_heatmap';
+
+function ankiLoadData(){
+  try { ankiData = JSON.parse(localStorage.getItem(ANKI_KEY)||'{}'); } catch(e){ ankiData={}; }
+}
+function ankiSaveData(){ localStorage.setItem(ANKI_KEY, JSON.stringify(ankiData)); }
+
+function ankiGetCard(id){
+  if(!ankiData[id]) ankiData[id] = { interval:0, ef:2.5, reps:0, dueDate:0, lapses:0, lastReview:0 };
+  return ankiData[id];
+}
+
+function ankiIsDue(id){
+  const c = ankiGetCard(id);
+  return c.dueDate <= Date.now();
+}
+
+function ankiIsNew(id){
+  return ankiGetCard(id).reps === 0;
+}
+
+/* SM-2 scheduling */
+function sm2(card, quality){ // quality: 0=again,1=hard,2=good,3=easy
+  let { interval, ef, reps, lapses } = card;
+  if(quality === 0){ // again
+    reps = 0; interval = 1; lapses++;
+    ef = Math.max(1.3, ef - 0.2);
+  } else {
+    if(reps === 0) interval = quality >= 2 ? 1 : 1;
+    else if(reps === 1) interval = quality >= 3 ? 4 : 1;
+    else {
+      const mult = quality === 1 ? 1.2 : quality === 2 ? ef : ef * 1.3;
+      interval = Math.round(interval * mult);
+    }
+    // EF adjustment
+    ef = Math.max(1.3, ef + (0.1 - (3-quality)*(0.08+(3-quality)*0.02)));
+    reps++;
+    if(quality >= 3) interval = Math.max(interval, 4);
+  }
+  interval = Math.min(interval, 365); // cap at 1 year
+  const dueDate = Date.now() + interval * 86400000;
+  return { interval, ef, reps, lapses, dueDate, lastReview: Date.now() };
+}
+
+function ankiGetIntervalLabel(quality, card){
+  const test = sm2({...card}, quality);
+  const days = test.interval;
+  if(days < 1) return 'الآن';
+  if(days === 1) return 'يوم';
+  if(days < 7) return `${days} أيام`;
+  if(days < 30) return `${Math.round(days/7)} أسابيع`;
+  return `${Math.round(days/30)} شهور`;
+}
+
+function ankiBuildQueue(){
+  const now = Date.now();
+  let pool = SENTENCES;
+  if(ankiSessionDeck !== 'all') pool = SENTENCES.filter(s=>s.cat===ankiSessionDeck);
+
+  const due = pool.filter(s=>!ankiIsNew(s.id) && ankiIsDue(s.id)).slice(0, ankiDueLimit);
+  const newCards = pool.filter(s=>ankiIsNew(s.id)).slice(0, ankiNewLimit);
+
+  ankiQueue = shuffleArr([...due, ...shuffleArr(newCards)]);
+  ankiQIdx = 0;
+}
+
+function ankiUpdateQueueInfo(){
+  const pool = ankiSessionDeck==='all' ? SENTENCES : SENTENCES.filter(s=>s.cat===ankiSessionDeck);
+  const newCount = pool.filter(s=>ankiIsNew(s.id)).length;
+  const dueCount = pool.filter(s=>!ankiIsNew(s.id) && ankiIsDue(s.id)).length;
+  const learnedCount = pool.filter(s=>!ankiIsNew(s.id) && !ankiIsDue(s.id)).length;
+  document.getElementById('qNew').textContent = newCount;
+  document.getElementById('qDue').textContent = dueCount;
+  document.getElementById('qLearned').textContent = learnedCount;
+
+  const done = ankiSessionReviewed;
+  const total = Math.max(ankiQueue.length + done, 1);
+  document.getElementById('ankiProgressFill').style.width = Math.min(100, done/total*100)+'%';
+}
+
+function ankiLoadCard(){
+  ankiUpdateQueueInfo();
+  if(ankiQIdx >= ankiQueue.length){
+    ankiShowDone(); return;
+  }
+  const s = ankiQueue[ankiQIdx];
+  const card = ankiGetCard(s.id);
+  ankiFlipped = false;
+
+  document.getElementById('ankiCardWrapper').classList.remove('flipped');
+  document.getElementById('ankiEn').textContent = s.en;
+  document.getElementById('ankiAr').textContent = s.ar;
+  document.getElementById('ankiCat').textContent = s.cat;
+
+  const isNew = ankiIsNew(s.id);
+  const daysStr = card.interval > 0 ? `فترة المراجعة: ${card.interval} يوم` : 'بطاقة جديدة';
+  document.getElementById('ankiInterval').textContent = daysStr;
+
+  document.getElementById('ankiRatings').style.display='none';
+  document.getElementById('ankiFlipHint').style.display='block';
+
+  // Update interval labels
+  document.getElementById('intAgain').textContent = ankiGetIntervalLabel(0, card);
+  document.getElementById('intHard').textContent  = ankiGetIntervalLabel(1, card);
+  document.getElementById('intGood').textContent  = ankiGetIntervalLabel(2, card);
+  document.getElementById('intEasy').textContent  = ankiGetIntervalLabel(3, card);
+
+  // Show anki main, hide done
+  document.getElementById('ankiMain').style.display='block';
+  document.getElementById('ankiDone').style.display='none';
+}
+
+function ankiFlip(){
+  if(ankiFlipped) return;
+  ankiFlipped = true;
+  document.getElementById('ankiCardWrapper').classList.add('flipped');
+  document.getElementById('ankiRatings').style.display='grid';
+  document.getElementById('ankiFlipHint').style.display='none';
+  // Auto-speak
+  if(ankiQIdx < ankiQueue.length) speakSentence(ankiQueue[ankiQIdx].en);
+}
+
+function ankiSpeak(){
+  if(ankiQIdx < ankiQueue.length) speakSentence(ankiQueue[ankiQIdx].en);
+}
+
+function ankiRate(quality){
+  if(!ankiFlipped) return;
+  const s = ankiQueue[ankiQIdx];
+  const oldCard = ankiGetCard(s.id);
+  const newCard = sm2({...oldCard}, quality);
+  ankiData[s.id] = newCard;
+  ankiSaveData();
+  // Track heatmap
+  ankiTrackHeatmap();
+  ankiSessionReviewed++;
+  if(quality >= 2) ankiSessionCorrect++;
+  // Also update main state
+  if(quality >= 2) setStatus(s.id, 'known');
+  else if(quality === 1) setStatus(s.id, 'learning');
+
+  if(quality === 0){
+    // Shake and re-insert card later
+    document.getElementById('ankiScene').classList.add('anki-shake');
+    setTimeout(()=>document.getElementById('ankiScene').classList.remove('anki-shake'), 400);
+    // Re-insert at random position 3-6 ahead
+    const reinsert = ankiQueue.splice(ankiQIdx, 1)[0];
+    const pos = Math.min(ankiQueue.length, ankiQIdx + Math.floor(Math.random()*4)+3);
+    ankiQueue.splice(pos, 0, reinsert);
+  } else {
+    ankiQIdx++;
+  }
+  setTimeout(ankiLoadCard, 150);
+}
+
+function ankiShowDone(){
+  document.getElementById('ankiMain').style.display='none';
+  document.getElementById('ankiDone').style.display='block';
+  const pct = ankiSessionReviewed > 0 ? Math.round(ankiSessionCorrect/ankiSessionReviewed*100) : 0;
+  document.getElementById('ankiDoneSub').textContent =
+    `راجعت ${ankiSessionReviewed} بطاقة اليوم بنسبة إجابات صحيحة ${pct}٪. عد غداً للمراجعة الذكية!`;
+  const stats = document.getElementById('ankiSessionStats');
+  stats.innerHTML='';
+  [{val:ankiSessionReviewed,lbl:'بطاقة راجعتها',color:'var(--cyan)'},
+   {val:ankiSessionCorrect,lbl:'إجابة صحيحة',color:'var(--green)'},
+   {val:ankiSessionReviewed-ankiSessionCorrect,lbl:'تحتاج مراجعة',color:'var(--red)'},
+   {val:pct+'%',lbl:'نسبة الدقة',color:'var(--purple)'}
+  ].forEach(c=>{
+    const d=document.createElement('div'); d.className='anki-stat-box';
+    d.innerHTML=`<div class="anki-stat-val" style="color:${c.color}">${c.val}</div><div class="anki-stat-lbl">${c.lbl}</div>`;
+    stats.appendChild(d);
+  });
+  ankiRenderGlobalStats();
+  ankiRenderHeatmap();
+}
+
+function ankiReset(){
+  ankiSessionReviewed=0; ankiSessionCorrect=0;
+  ankiBuildQueue();
+  document.getElementById('ankiMain').style.display='block';
+  document.getElementById('ankiDone').style.display='none';
+  ankiLoadCard();
+}
+
+function ankiContinueMore(){
+  // Add more cards regardless of queue
+  const pool = ankiSessionDeck==='all'?SENTENCES:SENTENCES.filter(s=>s.cat===ankiSessionDeck);
+  const extra = shuffleArr(pool.filter(s=>!ankiIsNew(s.id))).slice(0,20);
+  if(extra.length===0){ showToast('لا توجد بطاقات إضافية!'); return; }
+  ankiQueue = extra;
+  ankiQIdx = 0;
+  document.getElementById('ankiMain').style.display='block';
+  document.getElementById('ankiDone').style.display='none';
+  ankiLoadCard();
+}
+
+// Heatmap data
+function ankiTrackHeatmap(){
+  let hm;
+  try{ hm = JSON.parse(localStorage.getItem(ANKI_HEATMAP_KEY)||'{}'); }catch(e){ hm={}; }
+  const today = new Date().toISOString().slice(0,10);
+  hm[today] = (hm[today]||0)+1;
+  localStorage.setItem(ANKI_HEATMAP_KEY, JSON.stringify(hm));
+}
+
+function ankiRenderHeatmap(){
+  let hm;
+  try{ hm = JSON.parse(localStorage.getItem(ANKI_HEATMAP_KEY)||'{}'); }catch(e){ hm={}; }
+  const container = document.getElementById('ankiHeatmap');
+  container.innerHTML='';
+  const now = new Date();
+  const start = new Date(now);
+  start.setDate(start.getDate()-364);
+  // Fill to week start (Sunday)
+  const dayOfWeek = start.getDay();
+  start.setDate(start.getDate()-dayOfWeek);
+
+  for(let d=new Date(start); d<=now; d.setDate(d.getDate()+1)){
+    const key = d.toISOString().slice(0,10);
+    const count = hm[key]||0;
+    const cell = document.createElement('div');
+    cell.className='hm-cell';
+    cell.setAttribute('data-count', Math.min(count,4));
+    cell.title=`${key}: ${count} مراجعة`;
+    container.appendChild(cell);
+  }
+}
+
+function ankiRenderGlobalStats(){
+  const el = document.getElementById('ankiGlobalStats');
+  el.innerHTML='';
+  const total = SENTENCES.length;
+  const seen = Object.keys(ankiData).filter(id=>ankiData[id].reps>0).length;
+  const mature = Object.keys(ankiData).filter(id=>ankiData[id].interval>=21).length;
+  const young = Object.keys(ankiData).filter(id=>{const c=ankiData[id];return c.reps>0&&c.interval<21;}).length;
+  const lapsed = Object.keys(ankiData).filter(id=>ankiData[id].lapses>2).length;
+  [{val:total,lbl:'إجمالي البطاقات',color:'var(--text)'},
+   {val:seen,lbl:'تمت مراجعتها',color:'var(--cyan)'},
+   {val:mature,lbl:'محفوظة (ناضجة)',color:'var(--green)'},
+   {val:young,lbl:'قيد التعلم',color:'var(--amber)'},
+   {val:lapsed,lbl:'تحتاج اهتمام',color:'var(--red)'}
+  ].forEach(c=>{
+    const d=document.createElement('div'); d.className='anki-stat-box';
+    d.innerHTML=`<div class="anki-stat-val" style="color:${c.color}">${c.val}</div><div class="anki-stat-lbl">${c.lbl}</div>`;
+    el.appendChild(d);
+  });
+}
+
+function ankiBuildDeckSelect(){
+  const el = document.getElementById('ankiDeckSelect');
+  el.innerHTML='';
+  const allBtn = document.createElement('button');
+  allBtn.className='deck-btn active'; allBtn.textContent='🗃️ كل البطاقات';
+  allBtn.onclick=()=>{ ankiSessionDeck='all'; document.querySelectorAll('.deck-btn').forEach(b=>b.classList.remove('active')); allBtn.classList.add('active'); ankiReset(); };
+  el.appendChild(allBtn);
+  getCats().forEach(cat=>{
+    const b=document.createElement('button'); b.className='deck-btn';
+    b.textContent=cat;
+    b.onclick=()=>{ ankiSessionDeck=cat; document.querySelectorAll('.deck-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); ankiReset(); };
+    el.appendChild(b);
+  });
+}
+
+function initAnki(){
+  ankiLoadData();
+  ankiBuildDeckSelect();
+  ankiBuildQueue();
+  ankiLoadCard();
+  ankiRenderHeatmap();
+  ankiRenderGlobalStats();
+}
+
+// =========== IMPORT ===========
+let importParsed = null;
+
+const PRESETS = [
+  { label:'💼 إنجليزية الأعمال المتقدمة (5 جمل)', data:[
+    {en:"Please find attached the report.",ar:"يرجى الاطلاع على التقرير المرفق.",cat:"أعمال متقدم"},
+    {en:"We need to align on the strategy.",ar:"نحتاج إلى التوافق على الاستراتيجية.",cat:"أعمال متقدم"},
+    {en:"The project is on track.",ar:"المشروع يسير وفق الخطة.",cat:"أعمال متقدم"},
+    {en:"Let's take this offline.",ar:"لنناقش هذا بشكل منفصل.",cat:"أعمال متقدم"},
+    {en:"I'll circle back with you.",ar:"سأعود إليك بشأن هذا.",cat:"أعمال متقدم"},
+  ]},
+  { label:'🏋️ عبارات الرياضة واللياقة (5 جمل)', data:[
+    {en:"Let's warm up first.",ar:"لنتدفأ أولاً.",cat:"رياضة"},
+    {en:"I go to the gym every day.",ar:"أذهب إلى الصالة الرياضية كل يوم.",cat:"رياضة"},
+    {en:"Push yourself to the limit.",ar:"ادفع نفسك إلى الحدود القصوى.",cat:"رياضة"},
+    {en:"No pain, no gain.",ar:"بدون ألم لا يوجد مكسب.",cat:"رياضة"},
+    {en:"I'm training for a marathon.",ar:"أتدرب للماراثون.",cat:"رياضة"},
+  ]},
+  { label:'🌿 المحادثات الاجتماعية المتقدمة (5 جمل)', data:[
+    {en:"What are your plans for the weekend?",ar:"ما خططك لعطلة نهاية الأسبوع؟",cat:"اجتماعي متقدم"},
+    {en:"I'd love to catch up sometime.",ar:"أودّ اللقاء بك في وقت ما.",cat:"اجتماعي متقدم"},
+    {en:"You should really try it.",ar:"يجب أن تجربه حقاً.",cat:"اجتماعي متقدم"},
+    {en:"It was a pleasure meeting you.",ar:"كان من دواعي سروري مقابلتك.",cat:"اجتماعي متقدم"},
+    {en:"We should do this again.",ar:"يجب أن نفعل هذا مرة أخرى.",cat:"اجتماعي متقدم"},
+  ]},
+];
+
+function loadCustomSentences(){
+  try{
+    const stored = JSON.parse(localStorage.getItem('en_master_custom')||'[]');
+    stored.forEach(s => { if(!SENTENCES.find(x=>x.id===s.id)) SENTENCES.push(s); });
+  }catch(e){}
+}
+
+function saveCustomSentences(newSents){
+  const stored = JSON.parse(localStorage.getItem('en_master_custom')||'[]');
+  localStorage.setItem('en_master_custom', JSON.stringify([...stored,...newSents]));
+}
+
+function getNextId(){ return Math.max(...SENTENCES.map(s=>s.id), 200)+1; }
+
+function validateImport(){
+  const raw = document.getElementById('importInput').value.trim();
+  const errEl = document.getElementById('importError');
+  const prevEl = document.getElementById('importPreview');
+  const confirmBtn = document.getElementById('importConfirmBtn');
+  errEl.style.display='none'; prevEl.style.display='none'; importParsed=null;
+  confirmBtn.style.opacity='0.4'; confirmBtn.style.pointerEvents='none';
+  if(!raw){ errEl.textContent='⚠️ الحقل فارغ!'; errEl.style.display='block'; return; }
+  let parsed;
+  try{ parsed=JSON.parse(raw); }catch(e){ errEl.textContent='❌ كود غير صحيح: '+e.message; errEl.style.display='block'; return; }
+  if(!Array.isArray(parsed)){ errEl.textContent='❌ يجب أن يكون مصفوفة [ ... ]'; errEl.style.display='block'; return; }
+  if(!parsed.length){ errEl.textContent='⚠️ المصفوفة فارغة!'; errEl.style.display='block'; return; }
+  const invalid = parsed.filter(s=>!s.en||!s.ar||!s.cat);
+  if(invalid.length){ errEl.textContent=`❌ ${invalid.length} عنصر ناقص الحقول`; errEl.style.display='block'; return; }
+  importParsed=parsed;
+  const cats=[...new Set(parsed.map(s=>s.cat))];
+  prevEl.innerHTML=`<div style="color:var(--green);font-size:0.9rem;margin-bottom:12px">✅ ${parsed.length} جملة في ${cats.length} قسم</div>${cats.map(cat=>{const items=parsed.filter(s=>s.cat===cat);return`<div style="margin-bottom:10px"><div style="color:var(--cyan);font-size:0.8rem;margin-bottom:4px">📂 ${cat} (${items.length})</div>${items.slice(0,2).map(s=>`<div style="font-size:0.8rem;color:var(--text2);margin-bottom:2px;direction:ltr">${s.en} — ${s.ar}</div>`).join('')}${items.length>2?`<div style="color:var(--text3);font-size:0.75rem">...و${items.length-2} أخرى</div>`:''}</div>`;}).join('')}`;
+  prevEl.style.display='block';
+  confirmBtn.style.opacity='1'; confirmBtn.style.pointerEvents='auto';
+}
+
+function confirmImport(){
+  if(!importParsed) return;
+  let nextId=getNextId();
+  const newSents=importParsed.map(s=>({id:nextId++,en:s.en.trim(),ar:s.ar.trim(),cat:s.cat.trim()}));
+  const newCat=newSents[0].cat;
+  newSents.forEach(s=>SENTENCES.push(s));
+  saveCustomSentences(newSents);
+  buildCatFilter(); renderGrid(); updateHeaderStats(); renderCustomSections();
+  ankiBuildDeckSelect();
+  document.getElementById('importInput').value='';
+  document.getElementById('importPreview').style.display='none';
+  document.getElementById('importConfirmBtn').style.opacity='0.4';
+  document.getElementById('importConfirmBtn').style.pointerEvents='none';
+  importParsed=null;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-browse').classList.add('active');
+  document.querySelector('.tab-btn').classList.add('active');
+  setTimeout(()=>{
+    document.querySelectorAll('.cat-btn').forEach(b=>{ if(b.textContent.startsWith(newCat)) b.click(); });
+  },50);
+  showToast(`🎉 تمت إضافة ${newSents.length} جملة في "${newCat}"!`);
+}
+
+function loadPreset(idx){
+  document.getElementById('importInput').value=JSON.stringify(PRESETS[idx].data,null,2);
+  validateImport();
+  showToast('📋 تم تحميل المثال');
+}
+
+function deleteCustomSection(cat){
+  if(!confirm(`حذف قسم "${cat}"؟`)) return;
+  const toRemove=SENTENCES.filter(s=>s.cat===cat&&s.id>200).map(s=>s.id);
+  toRemove.forEach(id=>{ const i=SENTENCES.findIndex(s=>s.id===id); if(i>-1) SENTENCES.splice(i,1); delete state[id]; delete ankiData[id]; });
+  let stored=JSON.parse(localStorage.getItem('en_master_custom')||'[]');
+  stored=stored.filter(s=>s.cat!==cat);
+  localStorage.setItem('en_master_custom',JSON.stringify(stored));
+  saveState(); ankiSaveData();
+  buildCatFilter(); renderGrid(); updateHeaderStats(); renderCustomSections();
+  showToast(`🗑️ تم حذف "${cat}"`);
+}
+
+function renderCustomSections(){
+  const el=document.getElementById('customSectionsList');
+  const customCats=[...new Set(SENTENCES.filter(s=>s.id>200).map(s=>s.cat))];
+  if(!customCats.length){ el.innerHTML='<div style="color:var(--text3);font-size:0.88rem;padding:16px;background:var(--card);border:1px solid var(--border);border-radius:12px;text-align:center">لا توجد أقسام مضافة بعد</div>'; return; }
+  el.innerHTML='';
+  customCats.forEach(cat=>{
+    const sents=SENTENCES.filter(s=>s.cat===cat&&s.id>200);
+    const known=sents.filter(s=>state[s.id]==='known').length;
+    const div=document.createElement('div');
+    div.style.cssText='background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;gap:16px';
+    div.innerHTML=`<div style="flex:1"><div style="font-size:0.95rem;margin-bottom:4px">${cat}</div><div style="color:var(--text2);font-size:0.8rem">${sents.length} جملة</div></div><button onclick="deleteCustomSection('${cat}')" style="background:rgba(255,79,107,0.1);border:1px solid rgba(255,79,107,0.3);color:var(--red);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:0.8rem;font-family:'Tajawal',sans-serif">🗑️ حذف</button>`;
+    el.appendChild(div);
+  });
+}
+
+function renderPresets(){
+  const el=document.getElementById('presetsList');
+  PRESETS.forEach((p,i)=>{
+    const b=document.createElement('button');
+    b.style.cssText='background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:14px 18px;color:var(--text2);font-family:"Tajawal",sans-serif;font-size:0.9rem;cursor:pointer;text-align:right;transition:all 0.2s';
+    b.textContent=p.label;
+    b.onmouseover=()=>{ b.style.borderColor='var(--amber)'; b.style.color='var(--amber)'; };
+    b.onmouseout=()=>{ b.style.borderColor='var(--border2)'; b.style.color='var(--text2)'; };
+    b.onclick=()=>loadPreset(i); el.appendChild(b);
+  });
+}
+
+// =========== TABS ===========
+function showTab(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  event.target.classList.add('active');
+  if(id==='quiz'){ buildQuiz(); }
+  if(id==='review'){ buildReviewList(); rIdx=0; loadReview(); }
+  if(id==='stats'){ renderStats(); }
+  if(id==='import'){ renderCustomSections(); }
+  if(id==='anki'){ initAnki(); }
+}
+
+// =========== UTILS ===========
+function shuffleArr(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]; } return a; }
+function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+
+// =========== INIT ===========
+loadState();
+loadCustomSentences();
+buildCatFilter();
+renderGrid();
+updateHeaderStats();
+renderPresets();
+if(synth.onvoiceschanged!==undefined){ synth.onvoiceschanged=()=>{}; }
+</script>
+</body>
+</html>
